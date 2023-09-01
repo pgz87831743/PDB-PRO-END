@@ -1,0 +1,80 @@
+package ${package.Controller};
+
+import com.project.app.util.R;
+import ${package.Entity}.${entity};
+import ${package.Service}.${entity}Service;
+import com.project.app.model.dto.PageDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+#if(${restControllerStyle})
+#else
+#end
+#if(${superControllerClassPackage})
+import ${superControllerClassPackage};
+#end
+
+/**
+ * <p>
+ * $!{table.comment} 前端控制器
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@RestController
+@RequestMapping("#if(${package.ModuleName})/${package.ModuleName}#end/#if(${controllerMappingHyphenStyle})${controllerMappingHyphen}#else${table.entityPath}#end")
+@RequiredArgsConstructor
+#if(${kotlin})
+class ${table.controllerName}#if(${superControllerClass}) : ${superControllerClass}()#end
+
+#else
+    #if(${superControllerClass})
+    public class ${table.controllerName} extends ${superControllerClass} {
+    #else
+    public class ${table.controllerName} {
+    #end
+
+    private final ${entity}Service i${entity}Service;
+
+
+    @PostMapping("page")
+    @Operation(summary = "$!{table.comment}分页")
+    public R page(@RequestBody PageDTO pageDTO) {
+        return R.success(i${entity}Service.page(pageDTO));
+    }
+
+    @GetMapping("listAll")
+    @Operation(summary = "$!{table.comment}列表")
+    public R listAll() {
+        return R.success(i${entity}Service.listAll());
+    }
+
+    @GetMapping("getById/{id}")
+    @Operation(summary = "$!{table.comment}详情")
+    public R get${entity}ById(@PathVariable("id") String id) {
+        return R.success(i${entity}Service.get${entity}ById(id));
+    }
+
+    @DeleteMapping("deleteById/{id}")
+    @Operation(summary = "$!{table.comment}删除")
+    public R delete${entity}ById(@PathVariable("id") String id) {
+        return R.success(i${entity}Service.delete${entity}ById(id),"删除成功");
+    }
+
+    @PostMapping("add")
+    @Operation(summary = "$!{table.comment}新增")
+    public R add${entity}(@RequestBody ${entity} obj) {
+        return R.success(i${entity}Service.add${entity}(obj),"新增成功");
+    }
+
+
+    @PutMapping("updateById")
+    @Operation(summary = "$!{table.comment}更新")
+    public R update${entity}ById(@RequestBody ${entity} obj) {
+        return R.success(i${entity}Service.update${entity}ById(obj),"更新成功");
+    }
+
+}
+#end
