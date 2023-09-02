@@ -6,6 +6,7 @@ import com.project.app.work.service.SysDeptService;
 import com.project.app.model.dto.PageDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 

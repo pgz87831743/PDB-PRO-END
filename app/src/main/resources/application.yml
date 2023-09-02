@@ -18,8 +18,8 @@ mybatis-plus:
       logic-delete-field: isDelete
       logic-delete-value: 1
       logic-not-delete-value: 0
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 
 
@@ -43,14 +43,24 @@ knife4j:
 
 
 
-
-
-
-attachment:
-  rootPath: ${user.dir}/files/
-  accessPath: /attachment/**
-  api: http://localhost:${server.port}/attachment/
-
-
 server:
   port: 9001
+
+
+
+self:
+  conf:
+    expires-time: 2D
+    sec-key: 111111
+    file-path: ${user.dir}/files/
+    file-access-path: /attachment/**
+    file-api: http://localhost:${server.port}/attachment/
+    ignore-url:
+      - /login
+      - /swagger-ui/**
+      - /doc.html
+      - /webjars/**
+      - /v3/api-docs/**
+      - /attachment/**
+      - /file/upload
+      - /system/register

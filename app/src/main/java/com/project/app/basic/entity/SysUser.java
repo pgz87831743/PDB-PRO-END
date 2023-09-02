@@ -64,8 +64,6 @@ public class SysUser implements UserDetails {
 
 
 
-
-
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {

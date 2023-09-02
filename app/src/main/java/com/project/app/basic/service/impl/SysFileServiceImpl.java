@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.project.app.basic.entity.SysFile;
 import com.project.app.basic.mapper.SysFileMapper;
 import com.project.app.basic.service.SysFileService;
+import com.project.app.config.MyConfiguration;
 import com.project.app.enums.FileTypeEnum;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,16 +35,12 @@ import java.util.Objects;
 public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> implements SysFileService, InitializingBean {
 
 
+    @Resource
+    private MyConfiguration myConfiguration;
 
 
-    @Value("${attachment.rootPath}")
-    public String filePath;
 
-    @Value("${attachment.accessPath}")
-    public String accessPath;
 
-    @Value("${attachment.api}")
-    public String accessApi;
 
     @Resource
     HttpServletResponse response;
@@ -67,7 +64,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> impl
                 throw new RuntimeException("文件上传失败");
             }
 
-            try (OutputStream out = new FileOutputStream(filePath + fileSource.getPath())) {
+            try (OutputStream out = new FileOutputStream(myConfiguration.getFilePath() + fileSource.getPath())) {
                 FileCopyUtils.copy(file.getInputStream(), out);
             } catch (Exception e) {
                 throw new RuntimeException("文件保存失败");
@@ -77,7 +74,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> impl
 
         saveBatch(filesInfo);
 
-        filesInfo.forEach(s -> s.setUrl(accessApi + s.getPath()));
+        filesInfo.forEach(s -> s.setUrl(myConfiguration.getFileApi() + s.getPath()));
 
         return filesInfo;
 
@@ -89,7 +86,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> impl
     public void download(String fileId) {
         SysFile attachment = getById(fileId);
         if (attachment != null) {
-            String filePath = this.filePath + attachment.getPath();
+            String filePath = myConfiguration.getFilePath() + attachment.getPath();
             byte[] bytes;
             try {
                 bytes = FileCopyUtils.copyToByteArray(new File(filePath));
@@ -113,7 +110,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> impl
     public boolean delete(String fileId) {
         SysFile files = getById(fileId);
         if (files != null) {
-            String filePath = this.filePath + files.getPath();
+            String filePath = myConfiguration.getFilePath() + files.getPath();
             File file = new File(filePath);
             if (file.exists()) {
                 removeById(fileId);
@@ -128,7 +125,7 @@ public class SysFileServiceImpl extends ServiceImpl<SysFileMapper, SysFile> impl
         FileTypeEnum[] values = FileTypeEnum.values();
         for (FileTypeEnum value : values) {
             String dirName = value.toString();
-            File file = new File(filePath + dirName);
+            File file = new File(myConfiguration.getFilePath() + dirName);
             if (!file.exists()) {
                 file.mkdirs();
             }
